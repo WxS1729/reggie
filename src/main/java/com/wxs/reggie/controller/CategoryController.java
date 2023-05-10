@@ -26,6 +26,9 @@ public class CategoryController {
         return R.success("新增分类成功");
     }
 
+
+    Category category;
+
     /**
      * 分页查询
      * @param page
@@ -57,6 +60,7 @@ public class CategoryController {
         categoryService.remove(ids);
         return R.success("分类信息删除成功");
     }
+
     @PutMapping
     public R<String> update(@RequestBody Category category){
         log.info("修改分类信息：{}",category);
@@ -64,8 +68,21 @@ public class CategoryController {
         return R.success("操作成功");
     }
 
-
+    /**
+     * 根据条件来查询分类数据 （下拉框）
+     * @param category
+     * @return
+     */
+    @GetMapping("/list")
     public R<List<Category>> list(Category category){
-        return null;
+        //条件构造器
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        //添加条件
+        queryWrapper.eq(category.getType() != null, Category::getType,category.getType());
+        //添加排序条件
+        queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+
+        List<Category> list = categoryService.list(queryWrapper);
+        return R.success(list);
     }
 }
