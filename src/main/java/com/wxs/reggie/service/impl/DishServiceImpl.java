@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Transactional
 public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements DishService {
 
     @Autowired
