@@ -88,5 +88,17 @@ public class AddressBookController {
 
     }
 
+    @DeleteMapping
+    public R<String> delete(@RequestParam("ids") Long id){
+        if (id != null){
+            addressBookService.removeById(id);
+            return R.success("删除成功");
+        }else {
+            return R.error("未知错误");
+        }
+
+    }
+
+
 
 }
