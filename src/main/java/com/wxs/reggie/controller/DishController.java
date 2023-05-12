@@ -141,4 +141,20 @@ public class DishController {
         }
         return R.success("删除成功");
     }
+
+
+    /**
+     * gun局条件查询对应的菜品数据
+     * @param dish
+     * @return
+     */
+    @GetMapping("/list")
+    public R<List<Dish>> list(Dish dish){
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Dish::getCategoryId,dish.getCategoryId());
+        //查询状态为  1   的  起售状态的菜品
+        queryWrapper.eq(Dish::getStatus,1);
+        List<Dish> dishList = dishService.list(queryWrapper);
+        return R.success(dishList);
+    }
 }
