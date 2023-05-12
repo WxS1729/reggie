@@ -5,11 +5,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wxs.reggie.common.CustomException;
 import com.wxs.reggie.common.R;
 import com.wxs.reggie.dto.SetmealDto;
+import com.wxs.reggie.entity.Category;
 import com.wxs.reggie.entity.Setmeal;
 import com.wxs.reggie.entity.SetmealDish;
 import com.wxs.reggie.mapper.SetMealMapper;
+import com.wxs.reggie.service.CategoryService;
 import com.wxs.reggie.service.SetMealService;
 import com.wxs.reggie.service.SetmealDishService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,8 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, Setmeal> impl
     @Autowired
     private SetmealDishService setmealDishService;
 
+    @Autowired
+    private CategoryService categoryService;
     /**
      * 新增套餐 保存关联表
      * @param setmealDto
@@ -62,5 +67,26 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, Setmeal> impl
         queryWrapper.in(SetmealDish::getSetmealId,ids);
         setmealDishService.remove(queryWrapper);
 
+    }
+
+    @Override
+    public SetmealDto showWithDish(Long id) {
+        //获取setmeal中的数据
+        Setmeal setmeal = this.getById(id);
+        SetmealDto setmealDto = new SetmealDto();
+
+        BeanUtils.copyProperties(setmeal,setmealDto);
+        //查询setmeal关联的菜品信息
+        LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(SetmealDish::getSetmealId,id);
+        List<SetmealDish> dishList = setmealDishService.list();
+
+        //查询categoryName的值
+        Category categoryName = categoryService.getById(setmeal.getCategoryId());
+
+        //组合到serMealDto中
+        setmealDto.setCategoryName(categoryName.getName());
+        setmealDto.setSetmealDishes(dishList);
+        return setmealDto;
     }
 }

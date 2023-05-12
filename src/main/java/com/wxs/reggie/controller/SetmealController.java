@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,7 +42,7 @@ public class SetmealController {
 
     @GetMapping("/page")
     public R<Page> page(Integer page, Integer pageSize,String name){
-        //创建分也够早起
+        //创建分页构造器
         Page<Setmeal> pageInfo = new Page<>(page,pageSize);
 
         Page<SetmealDto> setmealDtoPage = new Page<>();
@@ -91,6 +92,13 @@ public class SetmealController {
             }
         }
         return R.success("修改状态成功");
+    }
+
+
+    @GetMapping("/{id}")
+    public R<SetmealDto> show(@PathVariable Long id){
+        SetmealDto setmealDto = setMealService.showWithDish(id);
+        return R.success(setmealDto);
     }
 
 

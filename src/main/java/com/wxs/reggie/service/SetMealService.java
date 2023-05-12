@@ -22,4 +22,6 @@ public interface SetMealService extends IService<Setmeal> {
      * @param ids
      */
     public void deleteWitDish(List<Long> ids);
+
+    public SetmealDto showWithDish(Long id);
 }
