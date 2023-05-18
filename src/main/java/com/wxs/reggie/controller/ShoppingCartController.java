@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -60,6 +59,12 @@ public class ShoppingCartController {
         return R.success(cartServiceOne);
     }
 
+
+    /**
+     * 减少菜品
+     * @param shoppingCart
+     * @return
+     */
     @PostMapping("/sub")
     public R<String> sub(@RequestBody ShoppingCart shoppingCart){
         Long currentId = BaseContext.getCurrentId();
@@ -86,5 +91,16 @@ public class ShoppingCartController {
         List<ShoppingCart> list = shoppingCartService.list(queryWrapper);
         return R.success(list);
     }
+
+    @DeleteMapping("/clean")
+    public R<String> clean(){
+        Long currentId = BaseContext.getCurrentId();
+        LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ShoppingCart::getUserId,currentId);
+        shoppingCartService.remove(queryWrapper);
+        return R.success("");
+    }
+
+
 
 }
